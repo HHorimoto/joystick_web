@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <title>joystick web</title>
+  <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
+  <script src="joy.js"></script>
+  <script type="text/javascript">
+    function init() {
+      const hostName = location.hostname;
+      const wsURL = 'ws://' + hostName + ':9090';
+      const divStatus = document.getElementById('status');
+      // joy
+      var joy = new JoyStick('joyDiv');
+      var joyIinputPosX = document.getElementById("joyPosizioneX");
+      var joyInputPosY = document.getElementById("joyPosizioneY");
+      var joyDirezione = document.getElementById("joyDirezione");
+      var joyX = document.getElementById("joyX");
+      var joyY = document.getElementById("joyY");
+      setInterval(function(){ joyIinputPosX.value=joy.GetPosX(); }, 50);
+      setInterval(function(){ joyInputPosY.value=joy.GetPosY(); }, 50);
+      setInterval(function(){ joyDirezione.value=joy.GetDir(); }, 50);
+      setInterval(function(){ joyX.value=joy.GetX(); }, 50);
+      setInterval(function(){ joyY.value=joy.GetY(); }, 50);
+
+      const ros = new ROSLIB.Ros();
+      ros.on('error', function (error) {
+        console.log('Error connecting to websocket server: ', error);
+        divStatus.innerHTML = "Error";
+      });
+      ros.on('connection', function (error) {
+        console.log('Connected to websocket server.');
+        divStatus.innerHTML = "Connect";
+      });
+      ros.on('close', function (error) {
+        console.log('Connection to websocket server closed.');
+        divStatus.innerHTML = "Close";
+      });
+      // Connect to ROS.
+      ros.connect(wsURL);
+
+      var cmdVel = new ROSLIB.Topic({
+        ros : ros,
+        name : '/cmd_vel',
+        messageType : 'geometry_msgs/Twist'
+      });
+
+      setInterval(function()
+      {
+        const twist = new ROSLIB.Message({
+            linear : {
+              x : 0.0,
+              y : 0.0,
+              z : 0.0
+            },
+            angular : {
+              x : 0.0,
+              y : 0.0,
+              z : 0.0
+            }
+        });
+        if (joy.GetDir() == "C"){
+            // Center
+            twist.linear.x = 0.0;
+            twist.angular.z = 0.0;
+        }else if (joy.GetDir() == "N"){
+            // forward
+            twist.linear.x = 0.4;
+            twist.angular.z = 0.0;
+        }else if (joy.GetDir() == "NW"){
+            // forward and left
+            twist.linear.x = 0.4;
+            twist.angular.z = 0.349066;
+        }else if (joy.GetDir() == "W"){
+            // left
+            twist.linear.x = 0.0;
+            twist.angular.z = 0.698132;
+        }else if (joy.GetDir() == "SW"){
+            // backward and left
+            twist.linear.x = -0.4;
+            twist.angular.z = -0.349066;            
+        }else if (joy.GetDir() == "S"){
+            // backward
+            twist.linear.x = -0.4;
+            twist.angular.z = 0.0;
+        }else if (joy.GetDir() == "SE"){
+            // backward and right
+            twist.linear.x = -0.4;
+            twist.angular.z = 0.349066;  
+        }else if (joy.GetDir() == "E"){
+            // right
+            twist.linear.x = 0.0;
+            twist.angular.z = -0.698132;
+        }else if (joy.GetDir() == "NE"){
+            // forward and right
+            twist.linear.x = 0.4;
+            twist.angular.z = -0.349066;
+        }else{
+            // None
+            twist.linear.x = 0.0;
+            twist.angular.z = 0.0;  
+        }
+        cmdVel.publish(twist);
+      }, 50);
+    }
+
+    window.addEventListener('load', init);
+  </script>
+</head>
+
+<body>
+  <h1>joystick web</h1>
+  <h2>Status</h2>
+  <div id="status"></div>
+  <h2>JoyStick</h2>
+  <div id="joyDiv" style="width:200px;height:200px;margin-bottom:20px;"></div>
+  <div style="position:fixed;top:450px;left:10px;">
+    Posizione X:<input id="joyPosizioneX" type="text" /><br />
+    Posizione Y:<input id="joyPosizioneY" type="text" /><br />
+    Direzione:<input id="joyDirezione" type="text" /><br />
+    X :<input id="joyX" type="text" /><br />
+    Y :<input id="joyY" type="text" />
+  </div>  
+</body>
+
+</html>
