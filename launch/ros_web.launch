@@ -1,0 +1,7 @@
+<!-- http://localhost:8085/joystick_web/ -->
+<launch>
+  <arg name="use_debug_print" default="false" />
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+  <include file="$(find roswww)/launch/roswww.launch" />
+  <node if="$(arg use_debug_print)" pkg="joystick_web" type="listener.py" name="listener" output="screen" />
+</launch>
