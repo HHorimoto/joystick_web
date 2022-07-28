@@ -5,6 +5,7 @@ You can control your robots with the joystick.
 
 THANK YOU SO MUCH FOR [JoyStick](https://github.com/bobboteck/JoyStick). I use `JoyStick` for making my packge.
 
+![](./images/demo.gif)
 ## Requirement
 + Ubuntu18.04
 + ROS(Melodic)
