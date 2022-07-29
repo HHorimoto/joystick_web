@@ -3,6 +3,7 @@
 
 <head>
   <title>joystick web</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
   <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
   <script src="joy.js"></script>
   <script type="text/javascript">
@@ -167,18 +168,26 @@
   <h2>Status</h2>
   <div id="status"></div>
   <h2>JoyStick</h2>
-  <div id="joyDiv" style="width:200px;height:200px;margin-bottom:20px;"></div>
-  <div style="position:fixed;top:500px;left:10px;">
-    Posizione X:<input id="joyPosizioneX" type="text" /><br />
-    Posizione Y:<input id="joyPosizioneY" type="text" /><br />
-    Direzione:<input id="joyDirezione" type="text" /><br />
-    X :<input id="joyX" type="text" /><br />
-    Y :<input id="joyY" type="text" />
+  <div class="item-list">
+    <fieldset style="border:5px double #7BAA17; padding:10px; width:220px;">
+      <legend>REMOTE CONTROLLER</legend>
+      <div id="joyDiv" style="width:200px;height:200px;margin-bottom:20px;"></div>
+      <form id="checkBtn">
+        <input type="radio" name="speed" value="max" style="transform:scale(1.2);">MAX SPEED<p></p>
+        <input type="radio" name="speed" value="min" style="transform:scale(1.2);" checked>MIN SPEED
+      </form>
+    </fieldset>
+    <fieldset style="border:5px double #7BAA17; padding:10px; width:220px;">
+      <legend>DATA INFORMATION</legend>
+      <div style="top:300px; left:300px;">
+        Posizione X:<input id="joyPosizioneX" type="text" /><br />
+        Posizione Y:<input id="joyPosizioneY" type="text" /><br />
+        Direzione:<input id="joyDirezione" type="text" /><br />
+        X :<input id="joyX" type="text" /><br />
+        Y :<input id="joyY" type="text" />
+      </div>
   </div>
-  <form id="checkBtn">
-    <input type="radio" name="speed" value="max" style="transform:scale(1.5);">MAX SPEED
-    <input type="radio" name="speed" value="min" style="transform:scale(1.5);" checked>MIN SPEED
-  </form>
+  </fieldset>
 </body>
 
 </html>
