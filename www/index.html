@@ -12,6 +12,8 @@
       const wsURL = 'ws://' + hostName + ':9090';
       const divStatus = document.getElementById('status');
       const checkBtn = document.getElementById('checkBtn');
+      const scanMessage = document.getElementById('message');
+      scanMessage.innerText = "Waiting";
       var speedvalue = "min";
       var currentDir = "C";
       // joy
@@ -47,6 +49,25 @@
         ros : ros,
         name : '/cmd_vel',
         messageType : 'geometry_msgs/Twist'
+      });
+
+      var scan = new ROSLIB.Topic({
+        ros : ros,
+        name : '/base_scan',
+        messageType : 'sensor_msgs/LaserScan'
+      });
+
+      scan.subscribe(function(message) {
+        const scan_list = message.ranges;
+        const min = Math.min(...scan_list);
+        if (min < 1.0){
+          scanMessage.style.color = "red";
+          scanMessage.style.fontWeight = "bold";
+        }else{
+          scanMessage.style.color = "black";
+          scanMessage.style.fontWeight = "normal";
+        }
+        scanMessage.innerText = min.toFixed(2);
       });
 
       checkBtn.addEventListener('change', function () {
@@ -168,6 +189,11 @@
   <h2>Status</h2>
   <div id="status"></div>
   <h2>JoyStick</h2>
+  <fieldset style="border:5px double #7BAA17; padding:5px; width:150px;">
+    <legend>SCAN MIN DATA</legend>
+    <span id="message" ></span>
+    <span > <small>[m]</small></span>
+  </fieldset>
   <div class="item-list">
     <fieldset style="border:5px double #7BAA17; padding:10px; width:220px;">
       <legend>REMOTE CONTROLLER</legend>
