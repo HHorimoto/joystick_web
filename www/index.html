@@ -10,6 +10,9 @@
       const hostName = location.hostname;
       const wsURL = 'ws://' + hostName + ':9090';
       const divStatus = document.getElementById('status');
+      const checkBtn = document.getElementById('checkBtn');
+      var speedvalue;
+      var currentDir;
       // joy
       var joy = new JoyStick('joyDiv');
       var joyIinputPosX = document.getElementById("joyPosizioneX");
@@ -19,7 +22,7 @@
       var joyY = document.getElementById("joyY");
       setInterval(function(){ joyIinputPosX.value=joy.GetPosX(); }, 50);
       setInterval(function(){ joyInputPosY.value=joy.GetPosY(); }, 50);
-      setInterval(function(){ joyDirezione.value=joy.GetDir(); }, 50);
+      setInterval(function(){ joyDirezione.value=joy.GetDir(); currentDir=joy.GetDir();}, 50);
       setInterval(function(){ joyX.value=joy.GetX(); }, 50);
       setInterval(function(){ joyY.value=joy.GetY(); }, 50);
 
@@ -45,60 +48,111 @@
         messageType : 'geometry_msgs/Twist'
       });
 
+      checkBtn.addEventListener('change', function () {
+        speedvalue = checkBtn.speed.value;
+      });
+
       setInterval(function()
       {
+        const max_linear_vel = 0.4;
+        const max_angular_vel = 0.698132;
+        const min_linear_vel = 0.2;
+        const min_angular_vel = 0.349066;
+        const stop_vel = 0.0;
+
         const twist = new ROSLIB.Message({
-            linear : {
-              x : 0.0,
-              y : 0.0,
-              z : 0.0
-            },
-            angular : {
-              x : 0.0,
-              y : 0.0,
-              z : 0.0
-            }
+          linear : {
+            x : 0.0,
+            y : 0.0,
+            z : 0.0
+          },
+          angular : {
+            x : 0.0,
+            y : 0.0,
+            z : 0.0
+          }
         });
-        if (joy.GetDir() == "C"){
-            // Center
-            twist.linear.x = 0.0;
-            twist.angular.z = 0.0;
-        }else if (joy.GetDir() == "N"){
-            // forward
-            twist.linear.x = 0.4;
-            twist.angular.z = 0.0;
-        }else if (joy.GetDir() == "NW"){
-            // forward and left
-            twist.linear.x = 0.4;
-            twist.angular.z = 0.349066;
-        }else if (joy.GetDir() == "W"){
-            // left
-            twist.linear.x = 0.0;
-            twist.angular.z = 0.698132;
-        }else if (joy.GetDir() == "SW"){
-            // backward and left
-            twist.linear.x = -0.4;
-            twist.angular.z = -0.349066;            
-        }else if (joy.GetDir() == "S"){
-            // backward
-            twist.linear.x = -0.4;
-            twist.angular.z = 0.0;
-        }else if (joy.GetDir() == "SE"){
-            // backward and right
-            twist.linear.x = -0.4;
-            twist.angular.z = 0.349066;  
-        }else if (joy.GetDir() == "E"){
-            // right
-            twist.linear.x = 0.0;
-            twist.angular.z = -0.698132;
-        }else if (joy.GetDir() == "NE"){
-            // forward and right
-            twist.linear.x = 0.4;
-            twist.angular.z = -0.349066;
+
+        if (currentDir == "C"){
+          // Center
+          twist.linear.x = stop_vel;
+          twist.angular.z = stop_vel;
+        }else if (currentDir == "N"){
+          // forward
+          if (speedvalue == "max"){
+            twist.linear.x = max_linear_vel;
+            twist.angular.z = stop_vel;
+          }else if (speedvalue == "min"){
+            twist.linear.x = min_linear_vel;
+            twist.angular.z = stop_vel;
+          }
+        }else if (currentDir == "NW"){
+          // forward and left
+          if (speedvalue == "max"){
+            twist.linear.x = max_linear_vel;
+            twist.angular.z = max_angular_vel;
+          }else if (speedvalue == "min"){
+            twist.linear.x = min_linear_vel;
+            twist.angular.z = min_angular_vel;
+          }
+        }else if (currentDir == "W"){
+          // left
+          if (speedvalue == "max"){
+            twist.linear.x = stop_vel;
+            twist.angular.z = max_angular_vel;
+          }else if (speedvalue == "min"){
+            twist.linear.x = stop_vel;
+            twist.angular.z = min_angular_vel;
+          }
+        }else if (currentDir == "SW"){
+          // backward and left
+          if (speedvalue == "max"){
+            twist.linear.x = -max_linear_vel;
+            twist.angular.z = -max_angular_vel;
+          }else if (speedvalue == "min"){
+            twist.linear.x = -min_linear_vel;
+            twist.angular.z = -min_angular_vel;
+          }        
+        }else if (currentDir == "S"){
+          // backward
+          if (speedvalue == "max"){
+            twist.linear.x = -max_linear_vel;
+            twist.angular.z = stop_vel;
+          }else if (speedvalue == "min"){
+            twist.linear.x = -min_linear_vel;
+            twist.angular.z = stop_vel;
+          }  
+        }else if (currentDir == "SE"){
+          // backward and right
+          if (speedvalue == "max"){
+            twist.linear.x = -max_linear_vel;
+            twist.angular.z = max_angular_vel;
+          }else if (speedvalue == "min"){
+            twist.linear.x = -min_linear_vel;
+            twist.angular.z = min_angular_vel;
+          } 
+        }else if (currentDir == "E"){
+          // right
+          if (speedvalue == "max"){
+            twist.linear.x = stop_vel;
+            twist.angular.z = -max_angular_vel;
+          }else if (speedvalue == "min"){
+            twist.linear.x = stop_vel;
+            twist.angular.z = -min_angular_vel;
+          } 
+        }else if (currentDir == "NE"){
+          // forward and right
+          if (speedvalue == "max"){
+            twist.linear.x = max_linear_vel;
+            twist.angular.z = -max_angular_vel;
+          }else if (speedvalue == "min"){
+            twist.linear.x = min_linear_vel;
+            twist.angular.z = -min_angular_vel;
+          }
         }else{
-            // None
-            twist.linear.x = 0.0;
-            twist.angular.z = 0.0;  
+          // None
+          twist.linear.x = stop_vel;
+          twist.angular.z = stop_vel;
         }
         cmdVel.publish(twist);
       }, 50);
@@ -114,13 +168,17 @@
   <div id="status"></div>
   <h2>JoyStick</h2>
   <div id="joyDiv" style="width:200px;height:200px;margin-bottom:20px;"></div>
-  <div style="position:fixed;top:450px;left:10px;">
+  <div style="position:fixed;top:500px;left:10px;">
     Posizione X:<input id="joyPosizioneX" type="text" /><br />
     Posizione Y:<input id="joyPosizioneY" type="text" /><br />
     Direzione:<input id="joyDirezione" type="text" /><br />
     X :<input id="joyX" type="text" /><br />
     Y :<input id="joyY" type="text" />
-  </div>  
+  </div>
+  <form id="checkBtn">
+    <input type="radio" name="speed" value="max">MAX SPEED
+    <input type="radio" name="speed" value="min" checked>MIN SPEED
+  </form>
 </body>
 
 </html>
