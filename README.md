@@ -1,9 +1,8 @@
 # joystick_web
-This package provides the website has a joystick.
 
-You can control your robots with the joystick.
+**This package provides the website has a joystick.**
 
-THANK YOU SO MUCH FOR [JoyStick](https://github.com/bobboteck/JoyStick). I use `JoyStick` for making my packge.
+**You can control your robots with the joystick.**
 
 <img src=./images/index.png width="50%">
 
@@ -41,7 +40,6 @@ $ roslaunch joystick_web ros_web.launch
 
 2. Go to the url : `http://localhost:8085/joystick_web/`
 
-## References
-[1] bobboteck, 2021. https://github.com/bobboteck/JoyStick (accessed 2022 July 28)
+## License
 
-[2] Isaac Saito, 2020. http://wiki.ros.org/roslibjs/Tutorials/BasicRosFunctionality (accessed 2022 July 28)
+Distributed under the BSD-3-Clause License. See `LICENSE` for more information.
