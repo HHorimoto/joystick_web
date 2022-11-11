@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2018 Hiroto Horimoto */
+/* SPDX-License-Identifier: BSD-3-Clause */
+
 .item-list{
     display: flex;
     justify-content: left;

@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# SPDX-FileCopyrightText: 2018 Hiroto Horimoto
+# SPDX-License-Identifier: BSD-3-Clause
+
 import rospy
 from geometry_msgs.msg import Twist
 import math
